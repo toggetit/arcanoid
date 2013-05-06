@@ -3,8 +3,6 @@
 
 #include <SDL/SDL.h>
 
-const int FRAMES_PER_SECOND = 20;
-
 class GameCore
 {
 public:
@@ -22,7 +20,8 @@ private:
     SDL_Surface *screen;
     bool running;
 
-    SDL_Rect *paddle;
+    uint paddleSpeed;
+    SDL_Rect paddle;
 
 };
 
