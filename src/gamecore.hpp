@@ -22,6 +22,8 @@ private:
     SDL_Surface *screen;
     bool running;
 
+    SDL_Rect *paddle;
+
 };
 
 #endif // GAMECORE_H
