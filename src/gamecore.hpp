@@ -20,6 +20,18 @@ private:
     SDL_Surface *screen;
     bool running;
 
+    SDL_Rect ball;
+    void startBall();
+    bool ballLaunched;
+    short int unsigned ballSpeed;
+    int x, y;
+
+    void reset();
+
+    bool collisionDetection(SDL_Rect &obj, SDL_Rect &ball) const;
+
+    void calculations();
+
     uint paddleSpeed;
     SDL_Rect paddle;
 
