@@ -65,13 +65,21 @@ void GameCore::update()
         break;
     }
 
-    calculations();
-
     if(collisionDetection(paddle, ball))
     {
+        x = -x;
+        y = -y;
+
+        ball.x += x;
+        ball.y += y;
+
         std::cout<<"DETECT"<<std::endl;
         return;
     }
+
+    calculations();
+
+
 }
 
 void GameCore::calculations()
@@ -104,7 +112,7 @@ bool GameCore::collisionDetection(SDL_Rect &obj, SDL_Rect &ball) const
 {
     if(!ballLaunched) return false;
 
-    if (((ball.x + BALL_SIDE - 5) >= obj.x) || ((ball.y + BALL_SIDE - 5) >= obj.y)) return true;
+    if (((ball.x + BALL_SIDE - 1) >= obj.x) && ((ball.y + BALL_SIDE - 1) >= obj.y)) return true;
     return false;
 }
 
