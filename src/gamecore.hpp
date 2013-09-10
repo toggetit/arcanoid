@@ -24,11 +24,11 @@ private:
     void startBall();
     bool ballLaunched;
     short int unsigned ballSpeed;
-    int x, y;
+    int x, y;   //Вектор движения
 
     void reset();
 
-    bool collisionDetection(SDL_Rect &obj, SDL_Rect &ball) const;
+    bool collisionDetection(SDL_Rect &A, SDL_Rect &B) const;
 
     void calculations();
 

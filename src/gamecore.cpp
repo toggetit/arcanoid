@@ -1,8 +1,9 @@
 #include "gamecore.hpp"
+#include <iostream>
 #define BALL_SIDE 20
 #define PADDLE_W 80
 #define PADDLE_H 25
-#include <iostream>
+#define BALLSPEED 4
 
 GameCore::GameCore()
 {
@@ -25,10 +26,14 @@ void GameCore::reset()
 {
     paddleSpeed = 6;
     paddle = {640/2 - PADDLE_W/2, 480 - PADDLE_H, PADDLE_W, PADDLE_H};
+    //paddle = {100, 100, PADDLE_W, PADDLE_H};
 
     ballSpeed = 4;
-    ball = {paddle.x + paddle.w/2 - BALL_SIDE/2, paddle.y - BALL_SIDE, BALL_SIDE, BALL_SIDE};
+    //ball = {paddle.x + paddle.w/2 - BALL_SIDE/2, paddle.y - BALL_SIDE, BALL_SIDE, BALL_SIDE};
+    ball = {0, 0, BALL_SIDE, BALL_SIDE};
     ballLaunched = false;
+
+    std::cout<<ball.x<<" "<<ball.y<<" "<<paddle.x<<" "<<paddle.y<<std::endl;
 }
 
 void GameCore::cleanUp()
@@ -67,8 +72,21 @@ void GameCore::update()
 
     if(collisionDetection(paddle, ball))
     {
-        x = -x;
-        y = -y;
+        if((x > 0) && (y > 0))
+        {
+            x = -x;
+            //y = -y;
+        }
+        if((x < 0) && (y > 0))
+        {
+            y = -y;
+        }
+        else
+        {
+            x = -x;
+            y = -y;
+        }
+
 
         ball.x += x;
         ball.y += y;
@@ -84,13 +102,14 @@ void GameCore::update()
 
 void GameCore::calculations()
 {
+    /*
     if(!ballLaunched)
     {
         ball.x = paddle.x + paddle.w/2 - BALL_SIDE/2;
         ball.y = paddle.y - BALL_SIDE;
         return;
     }
-
+    */
 
 
     if((ball.x <= 0) || ball.x >= (640 - BALL_SIDE)) x = -x;
@@ -108,12 +127,29 @@ void GameCore::calculations()
 
 }
 
-bool GameCore::collisionDetection(SDL_Rect &obj, SDL_Rect &ball) const
+bool GameCore::collisionDetection(SDL_Rect &A, SDL_Rect &B) const
 {
-    if(!ballLaunched) return false;
+    //The sides of the rectangles
+    int leftA, leftB; int rightA, rightB;
+    int topA, topB; int bottomA, bottomB;
 
-    if (((ball.x + BALL_SIDE - 1) >= obj.x) && ((ball.y + BALL_SIDE - 1) >= obj.y)) return true;
-    return false;
+    //Calculate the sides of rect A
+    leftA = A.x;
+    rightA = A.x + A.w;
+    topA = A.y;
+    bottomA = A.y + A.h;
+
+    //Calculate the sides of rect B
+    leftB = B.x;
+    rightB = B.x + B.w;
+    topB = B.y;
+    bottomB = B.y + B.h;
+
+    //If any of the sides from A are outside of B
+    if(( bottomA <= topB ) || ( topA >= bottomB ) ||
+    ( rightA <= leftB ) || ( leftA >= rightB )) return false;
+    //If none of the sides from A are outside B
+    return true;
 }
 
 
