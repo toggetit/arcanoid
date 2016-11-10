@@ -9,12 +9,38 @@ GameCore::GameCore()
 {
 }
 
+GameCore::~GameCore() {
+  std::cout<<"Destructor called"<<std::endl;
+  SDL_DestroyRenderer(ren);
+  SDL_DestroyWindow(window);
+  
+}
+
 bool GameCore::init()
 {
-    if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_TIMER))
+  if(SDL_Init(SDL_INIT_EVERYTHING))
         return false;
 
-    screen = SDL_SetVideoMode(640, 480, 32, SDL_HWACCEL | SDL_DOUBLEBUF);
+    window = SDL_CreateWindow("Arcanoid!",
+			      SDL_WINDOWPOS_UNDEFINED,
+			      SDL_WINDOWPOS_UNDEFINED,
+			      640,
+			      480,
+			      SDL_WINDOW_SHOWN);
+    
+    if(window == NULL) {
+      std::cout<<"Can't create window "<<SDL_GetError();
+      return false;
+    }
+
+    ren = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+
+    if(ren == NULL) {
+      std::cout<<"Can't create renderer "<<SDL_GetError();
+      SDL_DestroyWindow(window);
+      return false;
+    }
+    
     running = true;
 
     reset();
@@ -36,13 +62,10 @@ void GameCore::reset()
     std::cout<<ball.x<<" "<<ball.y<<" "<<paddle.x<<" "<<paddle.y<<std::endl;
 }
 
-void GameCore::cleanUp()
-{
-    SDL_Quit();
-}
-
 void GameCore::update()
 {
+  //std::cout<<"Called update()"<<std::endl;
+  
     switch (event.type) {
     case SDL_QUIT:
         running = false;
@@ -97,11 +120,12 @@ void GameCore::update()
 
     calculations();
 
-
+  
 }
 
 void GameCore::calculations()
 {
+  //std::cout<<"Called calculations()"<<std::endl;
     /*
     if(!ballLaunched)
     {
@@ -164,14 +188,27 @@ void GameCore::startBall()
 
 void GameCore::render()
 {
-    SDL_LockSurface(screen);
+  
+  //SDL_RenderClear(ren);
 
-    SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format,0, 0, 0));
+  //Backgrouund
+  SDL_SetRenderDrawColor( ren, 0, 0, 0, 255 );
+  SDL_RenderClear(ren);
+  //old background
+  //SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format,0, 0, 0));
 
-    SDL_FillRect(screen, &paddle, SDL_MapRGB(screen->format,0xFF, 0xFF, 0xFF));
+  //draw paddle
+  SDL_SetRenderDrawColor( ren, 0, 255, 0, 255 );
+  SDL_RenderDrawRect(ren, &paddle);
+  //old paddle
+  //SDL_FillRect(screen, &paddle, SDL_MapRGB(screen->format,0xFF, 0xFF, 0xFF));
 
-    SDL_FillRect(screen, &ball, SDL_MapRGB(screen->format,0xFF, 0x11, 0xFF));
-
-    SDL_UnlockSurface(screen);
-    SDL_Flip(screen);
+  //draw ball
+  SDL_SetRenderDrawColor( ren, 0, 255, 0, 255 );
+  SDL_RenderDrawRect(ren, &ball);
+  //old ball
+  //SDL_FillRect(screen, &ball, SDL_MapRGB(screen->format,0xFF, 0x11, 0xFF));
+    
+  SDL_RenderPresent(ren);
+  
 }

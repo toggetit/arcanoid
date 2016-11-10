@@ -1,1 +1,7 @@
 *.user
+*.o
+arcanoid
+bin/*
+
+#emacs
+*~

@@ -34,7 +34,9 @@ int main()
             SDL_Delay(FRAMERATE - frameDuration);
     }
 
-    core->cleanUp();
+    delete core;
+
+    SDL_Quit();
 
     return(EXIT_SUCCESS);
 }
